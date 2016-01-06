@@ -1,0 +1,61 @@
+# These tasks will be merged into deployment graph. Here you
+# can specify new tasks for any roles, even built-in ones.
+
+- id: designate
+  type: group
+  role: [designate]
+  requires: [deploy_start]
+  required_for: [deploy_end]
+  tasks: 
+    - fuel_pkgs
+    - hiera
+    - globals
+    - logging
+    - tools
+    - netconfig
+    - hosts
+    - firewall
+  parameters:
+    strategy:
+      type: parallel
+
+- id: designate-haproxy
+  type: puppet
+  groups: ['primary-controller', 'controller']
+  required_for: [task-designate, deploy_end]
+  requires: [deploy_start, cluster-haproxy]
+  parameters:
+    puppet_manifest: puppet/manifests/haproxy.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 1800
+
+- id: task-designate-db
+  type: puppet
+  groups: ['primary-controller', 'controller']
+  required_for: [task-designate]
+  requires: [database]
+  parameters:
+    puppet_manifest: puppet/manifests/db.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 1800
+
+- id: designate-keystone
+  type: puppet
+  groups: ['primary-controller', 'controller']
+  required_for: [task-designate]
+  requires: [keystone]
+  parameters:
+    puppet_manifest: puppet/manifests/keystone.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 1800
+
+- id: task-designate
+  type: puppet
+  groups: [designate]
+  required_for: [deploy_end]
+  requires: [deploy_start, designate-haproxy, task-designate-db, designate-keystone]
+  parameters:
+    puppet_manifest: puppet/manifests/designate.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 1800
+
