@@ -1,8 +1,0 @@
-volumes_roles_mapping:
-  # Default role mapping
-  fuel-plugin-designate:
-    - {allocate_size: "min", id: "os"}
-    - {allocate_size: "min", id: "logs"}
-
-# Set here new volumes for your role
-volumes: []

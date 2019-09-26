@@ -1,8 +1,0 @@
-attributes: 
-  metadata: 
-    label: "Designate Service" 
-    weight: 90
-    db_password:
-      generator: "password"
-    user_password:
-      generator: "password"

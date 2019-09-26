@@ -1,6 +1,3 @@
-fuel-plugin-designate
-============
+# This repo has moved to OpenDev
 
-Plugin description:
-
-This is Fuel Plugin for Designate used in Fuel Environment for deploying Designate
+It can now be found at [https://opendev.org/x/fuel-plugin-designate](https://opendev.org/x/fuel-plugin-designate)
